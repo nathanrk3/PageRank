@@ -28,11 +28,12 @@ std::vector<int> Graph::getAdjacent(int v)
     if(this->graph.find(v) != graph.end())
         return graph[v];
 
-    return std::vector<int>();//returns empty vector if node doesnt exist
+    return std::vector<int>();
 }
 
 void Graph::pageRank(int n) {
     int num_vertices = this->graph.size();
+    std::cout << "Number of Vertices:" << num_vertices << std::endl;
     std::map<std::string, double> ranks;
     for(auto it: names_to_id)
     {
@@ -40,44 +41,39 @@ void Graph::pageRank(int n) {
     }
     std::vector<int> adjacents;
 
-    // Debug: Print initial ranks
-    std::cout << "Initial ranks:" << std::endl;
-    std::cout << "Number of Vertices: " << num_vertices << std::endl;
-    for (int i = 0; i < num_vertices; i++) {
-        std::cout << i << ": " << ranks[i] << std::endl;
-    }
 
-    for (int j = 0; j < n; j++) {
-        std::vector<double> temp(num_vertices, 0.0);
-        for (int i = 0; i < num_vertices; i++) {
-            adjacents = getAdjacent(i);
+
+
+    for (int j = 1; j < n; j++) {
+        std::map<std::string, double> temp;
+        //for(auto idk : temp)
+        //{
+          //  idk.second = 0;
+        //}
+        for (auto iter : names_to_id) {
+            std::string name = iter.first;
+            int v = iter.second;
+            adjacents = getAdjacent(v);
             if(adjacents.size() != 0)
             {
-                double rank = ranks[i] / adjacents.size();
+                //double rank = ranks[name] / adjacents.size();
+                double rank = 0.0;
+                rank = ranks[name] / adjacents.size();
                 for (int a: adjacents)
                 {
-                    temp[a] += rank;
+                    temp[id_to_names[a]] += rank;
                 }
             }
-            else
-            {
-                for(int c = 0; c < num_vertices; c++)
-                {
-                    temp[c] += ranks[i] / num_vertices;
-                }
-            }
+
 
 
         }
         ranks = temp;
     }
 
-    // Debug: Print final ranks
-    std::cout << "Final ranks after " << n << " iterations:" << std::endl;
 
-    for(auto it : id_to_names)
+    for(auto final : ranks)
     {
-        std::cout << it.second << " " << std::fixed << std::setprecision(2) << ranks[it.first] << std::endl;
-
+        std::cout << final.first << " " << std::fixed << std::setprecision(2) << final.second << std::endl;
     }
 }
